@@ -14,7 +14,7 @@ const MovieSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ["planing_to watch", "in_progress", "watched"],
+			enum: ["planing_to_watch", "in_progress", "watched"],
 			default: "planing_to_watch",
 		},
 		userScore: {
