@@ -1,12 +1,13 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
+require("colors");
 
-const connectDB = (url) => {
-  return mongoose.connect(url, {
-    useNewUrlParser: true,
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-}
+const connectDB = async (url) => {
+	try {
+		await mongoose.connect(url);
+		console.log("mongoDB connected".blue);
+	} catch (error) {
+		console.log(error);
+	}
+};
 
-module.exports = connectDB
+module.exports = connectDB;
