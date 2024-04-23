@@ -1,0 +1,332 @@
+openapi: 3.0.0
+info:
+  title: Jobs API
+  contact: {}
+  version: "1.0"
+servers:
+  - url: https://zero6-jobs-api-vlad-pisotskyi.onrender.com/api/v1
+    variables: {}
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register User
+      operationId: RegisterUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/RegisterUserRequest"
+                - example:
+                    name: Anya
+                    email: annyasamayasamaya@gmail.com
+                    password: secret
+            example:
+              name: Anya
+              email: annyasamayasamaya@gmail.com
+              password: secret
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login User
+      operationId: LoginUser
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/LoginUserRequest"
+                - example:
+                    email: annyasamayasamaya@gmail.com
+                    password: secret
+            example:
+              email: annyasamayasamaya@gmail.com
+              password: secret
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security: []
+  /movies/populate:
+    post:
+      tags:
+        - Movies
+      summary: Populate Movies DB
+      operationId: PopulateMoviesDB
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+  /movies:
+    get:
+      tags:
+        - Movies
+      summary: Get all movies
+      operationId: Getallmovies
+      parameters:
+        - name: limit
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 5
+        - name: sort
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: startYear
+        - name: page
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 1
+        - name: movieName
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: x-men
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /movies/myMovies/{id}:
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+        description: The movie ID
+    get:
+      tags:
+        - Movies
+      summary: Find Movie
+      operationId: FindMovie
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+    patch:
+      tags:
+        - Movies
+      summary: Update movie
+      operationId: Updatemovie
+      parameters:
+        - name: status
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: string
+            example: watched
+        - name: userScore
+          in: query
+          description: ""
+          required: true
+          style: form
+          explode: true
+          schema:
+            type: integer
+            format: int32
+            example: 5
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+    delete:
+      tags:
+        - Movies
+      summary: Delete movie
+      operationId: Deletemovie
+      parameters: []
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+  /movies/addMovie:
+    post:
+      tags:
+        - Movies
+      summary: Create new movie
+      operationId: Createnewmovie
+      parameters: []
+      requestBody:
+        description: ""
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: "#/components/schemas/CreatenewmovieRequest"
+                - example:
+                    id: tt0022002
+                    movieName: Iron Man
+                    startYear: "1931"
+                    endYear: null
+                    releaseDate: "{day:30, month:4, year:1931}"
+                    primaryImage: https://m.media-amazon.com/images/M/MV5BOTc1MDMyZDctMTFjNi00ZDkwLWFhNzQtOWE3MWFkYjEyZjFiXkEyXkFqcGdeQXVyMjUxODE0MDY@._V1_.jpg
+            example:
+              id: tt0022002
+              movieName: Iron Man
+              startYear: "1931"
+              endYear: null
+              releaseDate: "{day:30, month:4, year:1931}"
+              primaryImage: https://m.media-amazon.com/images/M/MV5BOTc1MDMyZDctMTFjNi00ZDkwLWFhNzQtOWE3MWFkYjEyZjFiXkEyXkFqcGdeQXVyMjUxODE0MDY@._V1_.jpg
+        required: true
+      responses:
+        "200":
+          description: ""
+          headers: {}
+      deprecated: false
+      security:
+        - bearer: []
+components:
+  schemas:
+    RegisterUserRequest:
+      title: RegisterUserRequest
+      required:
+        - name
+        - email
+        - password
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        name: Anya
+        email: annyasamayasamaya@gmail.com
+        password: secret
+    LoginUserRequest:
+      title: LoginUserRequest
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      example:
+        email: annyasamayasamaya@gmail.com
+        password: secret
+    CreatenewmovieRequest:
+      title: CreatenewmovieRequest
+      required:
+        - id
+        - movieName
+        - startYear
+        - endYear
+        - releaseDate
+        - primaryImage
+      type: object
+      properties:
+        id:
+          type: string
+        movieName:
+          type: string
+        startYear:
+          type: string
+        endYear:
+          type: string
+          nullable: true
+        releaseDate:
+          type: string
+        primaryImage:
+          type: string
+      example:
+        id: tt0022002
+        movieName: Iron Man
+        startYear: "1931"
+        endYear: null
+        releaseDate: "{day:30, month:4, year:1931}"
+        primaryImage: https://m.media-amazon.com/images/M/MV5BOTc1MDMyZDctMTFjNi00ZDkwLWFhNzQtOWE3MWFkYjEyZjFiXkEyXkFqcGdeQXVyMjUxODE0MDY@._V1_.jpg
+    DeletemovieRequest:
+      title: DeletemovieRequest
+      required:
+        - id
+        - movieName
+        - startYear
+        - endYear
+        - releaseDate
+        - primaryImage
+      type: object
+      properties:
+        id:
+          type: string
+        movieName:
+          type: string
+        startYear:
+          type: string
+        endYear:
+          type: string
+          nullable: true
+        releaseDate:
+          type: string
+        primaryImage:
+          type: string
+      example:
+        id: tt0022002
+        movieName: Iron Man
+        startYear: "1931"
+        endYear: null
+        releaseDate: "{day:30, month:4, year:1931}"
+        primaryImage: https://m.media-amazon.com/images/M/MV5BOTc1MDMyZDctMTFjNi00ZDkwLWFhNzQtOWE3MWFkYjEyZjFiXkEyXkFqcGdeQXVyMjUxODE0MDY@._V1_.jpg
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+security: []
