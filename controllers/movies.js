@@ -53,7 +53,7 @@ const findMovie = async (req, res) => {
 	const { id } = req.params;
 	const { userId } = req.user;
 	if (!id) throw new BadRequestError("no id provided");
-	const movie = await Movie.find({ createdBy: userId, id });
+	const movie = await Movie.findOne({ createdBy: userId, id });
 	if (!movie) throw new NotFoundError("movie not found");
 	res.status(StatusCodes.OK).json({ movie });
 };
@@ -75,8 +75,8 @@ const updateMovie = async (req, res) => {
 const removeMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	if (!id) throw new BadRequestError("no id provided");
-
+	if (mongoose.isValidObjectId(id))
+		throw new BadRequestError("please provide a valid id");
 	const movie = await Movie.findOneAndDelete({ createdBy: userId, id });
 	if (!movie) throw new NotFoundError("movie not found");
 
