@@ -2,17 +2,27 @@ import { enableInput, inputEnabled, message, setDiv, token } from "./index.js";
 import { showJobs } from "./jobs.js";
 
 let addEditDiv = null;
-let company = null;
-let position = null;
-let status = null;
 let addingJob = null;
 
+let movieId = null;
+let movieName = null;
+let startYear = null;
+let endYear = null;
+let releaseDate = null;
+let primaryImage = null;
+let rating = null;
+
 export const handleAddEdit = () => {
-	addEditDiv = document.getElementById("edit-job");
-	company = document.getElementById("company");
-	position = document.getElementById("position");
-	status = document.getElementById("status");
+	addEditDiv = document.getElementById("edit-movie");
+	movieId = document.getElementById("movieId");
+	movieName = document.getElementById("movieName");
+	startYear = document.getElementById("startYear");
+	endYear = document.getElementById("endYear");
+	releaseDate = document.getElementById("releaseDate");
+	primaryImage = document.getElementById("primaryImage");
+	rating = document.getElementById("rating");
 	addingJob = document.getElementById("adding-job");
+
 	const editCancel = document.getElementById("edit-cancel");
 
 	addEditDiv.addEventListener("click", async (e) => {
@@ -21,11 +31,11 @@ export const handleAddEdit = () => {
 				enableInput(false);
 
 				let method = "POST";
-				let url = "/api/v1/jobs";
+				let url = "/api/v1/movies/addMovie";
 
 				if (addingJob.textContent === "update") {
 					method = "PATCH";
-					url = `/api/v1/jobs/${addEditDiv.dataset.id}`;
+					url = `/api/v1/movies/myMovies/${addEditDiv.dataset.id}`;
 				}
 
 				try {
@@ -36,9 +46,13 @@ export const handleAddEdit = () => {
 							Authorization: `Bearer ${token}`,
 						},
 						body: JSON.stringify({
-							company: company.value,
-							position: position.value,
-							status: status.value,
+							id: movieId.value,
+							movieName: movieName.value,
+							startYear: startYear.value,
+							endYear: endYear.value,
+							releaseDate: releaseDate.value,
+							primaryImage: primaryImage.value,
+							userScore: rating.value,
 						}),
 					});
 
@@ -52,9 +66,14 @@ export const handleAddEdit = () => {
 							message.textContent = "The job entry was created.";
 						}
 
-						company.value = "";
-						position.value = "";
-						status.value = "pending";
+						movieId.value = "";
+						movieName.value = "";
+						startYear.value = "";
+						endYear.value = "";
+						releaseDate.value = "";
+						primaryImage.value = "";
+						rating.value = "";
+
 						showJobs();
 					} else {
 						message.textContent = data.msg;
@@ -72,11 +91,14 @@ export const handleAddEdit = () => {
 	});
 };
 
-export const showAddEdit = async (jobId) => {
-	if (!jobId) {
-		company.value = "";
-		position.value = "";
-		status.value = "pending";
+export const showAddEdit = async (id) => {
+	if (!id) {
+		movieId.value = "";
+		movieName.value = "";
+		startYear.value = "";
+		endYear.value = "";
+		releaseDate.value = "";
+		primaryImage.value = "";
 		addingJob.textContent = "add";
 		message.textContent = "";
 
@@ -85,7 +107,7 @@ export const showAddEdit = async (jobId) => {
 		enableInput(false);
 
 		try {
-			const response = await fetch(`/api/v1/jobs/${jobId}`, {
+			const response = await fetch(`/api/v1/movies/myMovies/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -95,12 +117,16 @@ export const showAddEdit = async (jobId) => {
 
 			const data = await response.json();
 			if (response.status === 200) {
-				company.value = data.job.company;
-				position.value = data.job.position;
-				status.value = data.job.status;
+				movieId.value = data.movie.id;
+				movieName.value = data.movie.movieName;
+				startYear.value = data.movie.startYear;
+				endYear.value = data.movie.endYear;
+				releaseDate.value = data.movie.releaseDate;
+				primaryImage.value = data.movie.primaryImage;
 				addingJob.textContent = "update";
 				message.textContent = "";
-				addEditDiv.dataset.id = jobId;
+
+				addEditDiv.dataset.id = id;
 
 				setDiv(addEditDiv);
 			} else {

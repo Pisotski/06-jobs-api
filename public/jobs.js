@@ -44,7 +44,7 @@ export const showJobs = async () => {
 	try {
 		enableInput(false);
 
-		const response = await fetch("/api/v1/jobs", {
+		const response = await fetch("/api/v1/movies", {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -52,22 +52,24 @@ export const showJobs = async () => {
 			},
 		});
 
-		const data = await response.json();
+		let data = await response.json();
 		let children = [jobsTableHeader];
 
 		if (response.status === 200) {
 			if (data.count === 0) {
 				jobsTable.replaceChildren(...children); // clear this for safety
 			} else {
-				for (let i = 0; i < data.jobs.length; i++) {
+				for (let i = 0; i < data.movies.length; i++) {
 					let rowEntry = document.createElement("tr");
 
-					let editButton = `<td><button type="button" class="editButton" data-id=${data.jobs[i]._id}>edit</button></td>`;
-					let deleteButton = `<td><button type="button" class="deleteButton" data-id=${data.jobs[i]._id}>delete</button></td>`;
+					let editButton = `<td><button type="button" class="editButton" data-id=${data.movies[i]._id}>edit</button></td>`;
+					let deleteButton = `<td><button type="button" class="deleteButton" data-id=${data.movies[i]._id}>delete</button></td>`;
 					let rowHTML = `
-              <td>${data.jobs[i].company}</td>
-              <td>${data.jobs[i].position}</td>
-              <td>${data.jobs[i].status}</td>
+              <td>${data.movies[i].movieName}</td>
+              <td>${data.movies[i].releaseDate}</td>
+              <td class="movie-image">${data.movies[i].primaryImage}</td>
+			  <td>${data.movies[i].status}</td>
+              <td>${data.movies[i].userScore}</td>
               <div>${editButton}${deleteButton}</div>`;
 
 					rowEntry.innerHTML = rowHTML;
