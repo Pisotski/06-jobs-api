@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors");
 const data = require("../mockData");
 const { removeNullsAndUndefined, makeDate } = require("../helpers");
+const mongoose = require("mongoose");
 require("colors");
 
 // Movie sample
@@ -81,7 +82,8 @@ const updateMovie = async (req, res) => {
 const removeMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	if (mongoose.isValidObjectId(id))
+	console.log(id);
+	if (mongoose.isValidObjectId({ _id: id }))
 		throw new BadRequestError("please provide a valid id");
 	const movie = await Movie.findOneAndDelete({ createdBy: userId, _id: id });
 	if (!movie) throw new NotFoundError("movie not found");
