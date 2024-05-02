@@ -64,14 +64,9 @@ const findMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	if (!req.body.status && !req.body.userScore)
-		throw new BadRequestError("nothing to update");
+	if (!req.body) throw new BadRequestError("nothing to update");
 	const queryObject = { createdBy: userId, _id: id };
-	const fieldsToUpdate = {
-		status: req.body.status,
-		userScore: req.body.userScore,
-	};
-	const movie = await Movie.findOneAndUpdate(queryObject, fieldsToUpdate, {
+	const movie = await Movie.findOneAndUpdate(queryObject, req.body, {
 		new: true,
 		runValidators: true,
 	});
@@ -82,7 +77,6 @@ const updateMovie = async (req, res) => {
 const removeMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	console.log(id);
 	if (mongoose.isValidObjectId({ _id: id }))
 		throw new BadRequestError("please provide a valid id");
 	const movie = await Movie.findOneAndDelete({ createdBy: userId, _id: id });
@@ -105,7 +99,6 @@ const createMovie = async (req, res) => {
 const populateDB = async (req, res) => {
 	const moviesCollection = data.results.map((movie) => {
 		const movieObject = {
-			id: movie.id,
 			movieName: movie.titleText.text,
 			startYear: movie.releaseYear?.year,
 			endYear: movie.releaseYear?.endYear,

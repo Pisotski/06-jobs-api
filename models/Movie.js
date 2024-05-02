@@ -4,8 +4,9 @@ const MovieSchema = new Schema(
 	{
 		id: {
 			type: String,
-			required: [true, "Please provide movie id"],
-			unique: true,
+			// not used for UI
+			// required: [true, "Please provide movie id"],
+			// unique: true,
 		},
 		movieName: {
 			type: String,
@@ -14,8 +15,8 @@ const MovieSchema = new Schema(
 		},
 		status: {
 			type: String,
-			enum: ["planing_to_watch", "in_progress", "watched"],
-			default: "planing_to_watch",
+			enum: ["planning_to_watch", "in_progress", "watched"],
+			default: "planning_to_watch",
 		},
 		userScore: {
 			type: String,
