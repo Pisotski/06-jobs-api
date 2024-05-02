@@ -1,26 +1,23 @@
 import { enableInput, inputEnabled, message, setDiv, token } from "./index.js";
 import { showJobs } from "./jobs.js";
+import { normalizeDate } from "./helpers.js";
 
 let addEditDiv = null;
 let addingJob = null;
 
-let movieId = null;
 let movieName = null;
-let startYear = null;
-let endYear = null;
 let releaseDate = null;
 let primaryImage = null;
-let rating = null;
+let status = null;
+let userScore = null;
 
 export const handleAddEdit = () => {
 	addEditDiv = document.getElementById("edit-movie");
-	movieId = document.getElementById("movieId");
 	movieName = document.getElementById("movieName");
-	startYear = document.getElementById("startYear");
-	endYear = document.getElementById("endYear");
 	releaseDate = document.getElementById("releaseDate");
 	primaryImage = document.getElementById("primaryImage");
-	rating = document.getElementById("rating");
+	status = document.getElementById("status");
+	userScore = document.getElementById("userScore");
 	addingJob = document.getElementById("adding-job");
 
 	const editCancel = document.getElementById("edit-cancel");
@@ -46,13 +43,11 @@ export const handleAddEdit = () => {
 							Authorization: `Bearer ${token}`,
 						},
 						body: JSON.stringify({
-							id: movieId.value,
 							movieName: movieName.value,
-							startYear: startYear.value,
-							endYear: endYear.value,
 							releaseDate: releaseDate.value,
 							primaryImage: primaryImage.value,
-							userScore: rating.value,
+							status: status.value,
+							userScore: userScore.value,
 						}),
 					});
 
@@ -66,13 +61,9 @@ export const handleAddEdit = () => {
 							message.textContent = "The job entry was created.";
 						}
 
-						movieId.value = "";
-						movieName.value = "";
-						startYear.value = "";
-						endYear.value = "";
-						releaseDate.value = "";
+						movieName.innerHTML = "";
+						releaseDate.innerHTML = "";
 						primaryImage.value = "";
-						rating.value = "";
 
 						showJobs();
 					} else {
@@ -93,10 +84,7 @@ export const handleAddEdit = () => {
 
 export const showAddEdit = async (id) => {
 	if (!id) {
-		movieId.value = "";
 		movieName.value = "";
-		startYear.value = "";
-		endYear.value = "";
 		releaseDate.value = "";
 		primaryImage.value = "";
 		addingJob.textContent = "add";
@@ -117,12 +105,11 @@ export const showAddEdit = async (id) => {
 
 			const data = await response.json();
 			if (response.status === 200) {
-				movieId.value = data.movie.id;
 				movieName.value = data.movie.movieName;
-				startYear.value = data.movie.startYear;
-				endYear.value = data.movie.endYear;
-				releaseDate.value = data.movie.releaseDate;
+				releaseDate.value = normalizeDate(data.movie.releaseDate);
 				primaryImage.value = data.movie.primaryImage;
+				status.value = data.movie.status;
+				userScore.value = data.movie.userScore;
 				addingJob.textContent = "update";
 				message.textContent = "";
 
@@ -134,6 +121,7 @@ export const showAddEdit = async (id) => {
 				message.textContent = "The jobs entry was not found";
 				showJobs();
 			}
+			``;
 		} catch (err) {
 			console.log(err);
 			message.textContent = "A communications error has occurred.";
@@ -155,7 +143,6 @@ export const deleteMovie = async (id, element) => {
 		});
 		const data = await response.json();
 		if (response.status === 200) {
-			console.log(data);
 			message.textContent = `${data.deletedMovie.movieName} deleted`;
 			element.parentNode.remove();
 		} else {

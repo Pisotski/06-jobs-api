@@ -8,6 +8,7 @@ import {
 } from "./index.js";
 import { showLoginRegister } from "./loginRegister.js";
 import { showAddEdit, deleteMovie } from "./addEdit.js";
+import { normalizeDate } from "./helpers.js";
 
 let jobsDiv = null;
 let jobsTable = null;
@@ -64,13 +65,21 @@ export const showJobs = async () => {
 			} else {
 				for (let i = 0; i < data.movies.length; i++) {
 					let rowEntry = document.createElement("tr");
-
+					const date =
+						normalizeDate(data.movies[i].releaseDate) ||
+						data.movies[i].releaseDate;
+					const divStyles = {
+						"background-image": "url(" + data.movies[i].primaryImage + ")",
+					};
 					let editButton = `<td><button type="button" class="editButton" data-id=${data.movies[i]._id}>edit</button></td>`;
 					let deleteButton = `<td><button type="button" class="deleteButton" data-id=${data.movies[i]._id}>delete</button></td>`;
 					let rowHTML = `
               <td>${data.movies[i].movieName}</td>
-              <td>${data.movies[i].releaseDate}</td>
-              <td class="movie-image">${data.movies[i].primaryImage}</td>
+              <td>${date}</td>
+              <td class="movie-image">
+			  
+			  <div style="background-image: url(${data.movies[i].primaryImage})"; width: 20px; height: 20px"/></td>
+			  
 			  <td>${data.movies[i].status}</td>
               <td>${data.movies[i].userScore}</td>
               <div>${editButton}${deleteButton}</div>`;

@@ -4,12 +4,12 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Jobs List</title>
+		<title>Movie List</title>
 		<link rel="stylesheet" href="index.css" />
 	</head>
 
 	<body>
-		<h1>Jobs List</h1>
+		<h1>Movie List</h1>
 		<hr />
 		<p id="message"></p>
 		<hr />
@@ -61,50 +61,39 @@
 					<th>Release Date</th>
 					<th>Image</th>
 					<th>Status</th>
-					<th>Rating</th>
+					<th>Score</th>
 					<th colspan="2"></th>
 				</tr>
 			</table>
-			<button type="button" id="add-job">add job</button>
+			<button type="button" id="add-job">add movie</button>
 			<button type="button" id="logoff">log off</button>
 		</div>
 		<div id="edit-movie" style="display: none">
 			<form>
 				<div>
-					<label for="movieId">movieId:</label>
-					<input type="text" id="movieId" />
-				</div>
-				<div>
-					<label for="movieName">movieName:</label>
+					<label for="movieName"> Name: </label>
 					<input type="text" id="movieName" />
 				</div>
 				<div>
-					<label for="startYear">startYear:</label>
-					<input type="text" id="startYear" />
-				</div>
-				<div>
-					<label for="endYear">endYear:</label>
-					<input type="text" id="endYear" />
-				</div>
-				<div>
-					<label for="releaseDate">releaseDate:</label>
+					<label for="releaseDate">Release Date:</label>
 					<input type="text" id="releaseDate" />
 				</div>
 				<div>
-					<label for="primaryImage">primaryImage:</label>
+					<label for="primaryImage">Cover:</label>
 					<input type="text" id="primaryImage" />
 				</div>
 				<div>
-					<label for="status">status:</label>
+					<label for="status">Status:</label>
 					<select id="status">
-						<option value="planing_to_watch">planing_to_watch</option>
+						<option value="planning_to_watch">planning_to_watch</option>
 						<option value="in_progress">in_progress</option>
 						<option value="watched">watched</option>
 					</select>
 				</div>
 				<div>
-					<label for="rating">rating:</label>
-					<select id="rating">
+					<label for="userScore">Score:</label>
+					<select id="userScore">
+						<option value="">--Select Score--</option>
 						<option value="1">1</option>
 						<option value="2">2</option>
 						<option value="3">3</option>
