@@ -8,7 +8,7 @@ const { removeNullsAndUndefined, makeDate } = require("../helpers");
 // "movies": {
 // 	"id": "tt0025547",
 // 	"movieName": "Márciusi mese",
-// 	"status": "planing to watch",
+// 	"status": "planing_to_watch",
 // 	"userScore": "1",
 // 	"startYear": "1934",
 // 	"releaseDate": "{day:4, month:3, year:1934}",
@@ -21,11 +21,12 @@ const { removeNullsAndUndefined, makeDate } = require("../helpers");
 // }
 
 const getAllMovies = async (req, res) => {
-	// getAllMovies?limit=5&sort=startYear&page=1&movieName=x-men
+	// getAllMovies /?limit=5&sort=startYear&page=1&movieName=x-men
 
 	const { sort, movieName } = req.query;
+	const { userId, name } = req.user;
 
-	const queryObject = {};
+	const queryObject = { createdBy: userId };
 
 	if (movieName) queryObject.movieName = { $regex: movieName, $options: "i" };
 
@@ -43,34 +44,41 @@ const getAllMovies = async (req, res) => {
 	result = result.skip(skip).limit(limit);
 
 	const movies = await result;
+	if (!movies) throw new NotFoundError(`no movies for ${name} found`);
+
 	res.status(StatusCodes.OK).json({ nHits: movies.length, movies });
 };
 
 const findMovie = async (req, res) => {
 	const { id } = req.params;
+	const { userId } = req.user;
 	if (!id) throw new BadRequestError("no id provided");
-	const movie = await Movie.find({ id });
-	if (!movie.length) throw new NotFoundError("movie not found");
+	const movie = await Movie.findOne({ createdBy: userId, id });
+	if (!movie) throw new NotFoundError("movie not found");
 	res.status(StatusCodes.OK).json({ movie });
 };
 
 const updateMovie = async (req, res) => {
-	const { status, userScore } = req.query;
+	const { userId } = req.user;
 	const { id } = req.params;
-	if (!id) throw new BadRequestError("no id provided");
-
-	const queryObject = {};
-	if (status) queryObject.status = status;
-	if (userScore) queryObject.userScore = userScore;
-	const movie = await Movie.findOneAndUpdate(queryObject);
+	if (!req.query.status && !req.query.userScore)
+		throw new BadRequestError("nothing to update");
+	const queryObject = { createdBy: userId, id };
+	const movie = await Movie.findOneAndUpdate(queryObject, req.query, {
+		new: true,
+		runValidators: true,
+	});
+	if (!movie) throw new NotFoundError("movie not found");
 	res.status(StatusCodes.OK).json({ updatedMovie: movie });
 };
 
 const removeMovie = async (req, res) => {
+	const { userId } = req.user;
 	const { id } = req.params;
-	if (!id) throw new BadRequestError("no id provided");
-
-	const movie = await Movie.findOneAndDelete({ id });
+	if (mongoose.isValidObjectId(id))
+		throw new BadRequestError("please provide a valid id");
+	const movie = await Movie.findOneAndDelete({ createdBy: userId, id });
+	if (!movie) throw new NotFoundError("movie not found");
 
 	res.status(StatusCodes.OK).json({ deletedMovie: movie });
 };

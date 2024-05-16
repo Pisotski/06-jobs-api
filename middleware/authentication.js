@@ -9,11 +9,13 @@ const authMiddleware = async (req, res, next) => {
 	}
 	const token = authorization.split(" ")[1];
 	try {
-		const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-		req.user = {
-			userId: decoded.userId,
-			name: decoded.name,
-		};
+		// const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+		// req.user = {
+		// 	userId: decoded.userId,
+		// 	name: decoded.name,
+		// };
+		req.user = jwt.verify(token, process.env.JWT_SECRET);
 		next();
 	} catch (error) {
 		throw new UnauthenticatedError("Invalid token");
