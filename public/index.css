@@ -1,0 +1,7 @@
+.movie-image {
+	box-sizing: border-box;
+	max-width: 15vw;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}

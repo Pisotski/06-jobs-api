@@ -153,26 +153,7 @@ paths:
         - Movies
       summary: Update movie
       operationId: Updatemovie
-      parameters:
-        - name: status
-          in: query
-          description: ""
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: string
-            example: watched
-        - name: userScore
-          in: query
-          description: ""
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: integer
-            format: int32
-            example: 5
+      parameters: []
       responses:
         "200":
           description: ""
@@ -208,14 +189,12 @@ paths:
               allOf:
                 - $ref: "#/components/schemas/CreatenewmovieRequest"
                 - example:
-                    id: tt0022002
                     movieName: Iron Man
                     startYear: "1931"
                     endYear: null
                     releaseDate: "{day:30, month:4, year:1931}"
                     primaryImage: https://m.media-amazon.com/images/M/MV5BOTc1MDMyZDctMTFjNi00ZDkwLWFhNzQtOWE3MWFkYjEyZjFiXkEyXkFqcGdeQXVyMjUxODE0MDY@._V1_.jpg
             example:
-              id: tt0022002
               movieName: Iron Man
               startYear: "1931"
               endYear: null
@@ -266,7 +245,6 @@ components:
     CreatenewmovieRequest:
       title: CreatenewmovieRequest
       required:
-        - id
         - movieName
         - startYear
         - endYear
@@ -274,8 +252,6 @@ components:
         - primaryImage
       type: object
       properties:
-        id:
-          type: string
         movieName:
           type: string
         startYear:
@@ -288,7 +264,6 @@ components:
         primaryImage:
           type: string
       example:
-        id: tt0022002
         movieName: Iron Man
         startYear: "1931"
         endYear: null

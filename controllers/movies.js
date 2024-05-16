@@ -3,6 +3,8 @@ const { StatusCodes } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors");
 const data = require("../mockData");
 const { removeNullsAndUndefined, makeDate } = require("../helpers");
+const mongoose = require("mongoose");
+require("colors");
 
 // Movie sample
 // "movies": {
@@ -52,8 +54,9 @@ const getAllMovies = async (req, res) => {
 const findMovie = async (req, res) => {
 	const { id } = req.params;
 	const { userId } = req.user;
+
 	if (!id) throw new BadRequestError("no id provided");
-	const movie = await Movie.findOne({ createdBy: userId, id });
+	const movie = await Movie.findOne({ createdBy: userId, _id: id });
 	if (!movie) throw new NotFoundError("movie not found");
 	res.status(StatusCodes.OK).json({ movie });
 };
@@ -61,10 +64,9 @@ const findMovie = async (req, res) => {
 const updateMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	if (!req.query.status && !req.query.userScore)
-		throw new BadRequestError("nothing to update");
-	const queryObject = { createdBy: userId, id };
-	const movie = await Movie.findOneAndUpdate(queryObject, req.query, {
+	if (!req.body) throw new BadRequestError("nothing to update");
+	const queryObject = { createdBy: userId, _id: id };
+	const movie = await Movie.findOneAndUpdate(queryObject, req.body, {
 		new: true,
 		runValidators: true,
 	});
@@ -75,9 +77,9 @@ const updateMovie = async (req, res) => {
 const removeMovie = async (req, res) => {
 	const { userId } = req.user;
 	const { id } = req.params;
-	if (mongoose.isValidObjectId(id))
+	if (mongoose.isValidObjectId({ _id: id }))
 		throw new BadRequestError("please provide a valid id");
-	const movie = await Movie.findOneAndDelete({ createdBy: userId, id });
+	const movie = await Movie.findOneAndDelete({ createdBy: userId, _id: id });
 	if (!movie) throw new NotFoundError("movie not found");
 
 	res.status(StatusCodes.OK).json({ deletedMovie: movie });
@@ -97,7 +99,6 @@ const createMovie = async (req, res) => {
 const populateDB = async (req, res) => {
 	const moviesCollection = data.results.map((movie) => {
 		const movieObject = {
-			id: movie.id,
 			movieName: movie.titleText.text,
 			startYear: movie.releaseYear?.year,
 			endYear: movie.releaseYear?.endYear,
